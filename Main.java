@@ -1,95 +1,134 @@
-import java.lang.reflect.Array;
-import java.util.Arrays;
-import java.util.Scanner;
+import java.util.*;
+import java.util.List;
 
-public class Main {
-
+class Main {
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
 
-        System.out.println(" Car");
-        System.out.println();
+        Car.addCar(new Car("audi", "A6", 2006, "YELLOW", 12500.50, "G 125S F"));
+        Car.addCar(new Car("audi", "A8", 2008, "RED", 15300., "K 183L G"));
+        Car.addCar(new Car("bmw", "3", 2006, "YELLOW", 14000., "H 444J K"));
+        Car.addCar(new Car("bmw", "3", 2005, "YELLOW", 14000., "H 444J K"));
+        Car.addCar(new Car("bmw", "7", 2002, "BLACK", 10400., "Y Y15R Q"));
+        Car.addCar(new Car("VW", "Polo", 2009, "GRAY", 11500., "F 189N C"));
 
-        //Car[] cars_list = cars_list();          ///// ручное заполнение
-        Car[] cars_list = car();             ////// автозаполнение
-        System.out.println("----------a)Print List of the Cars of that model.");
-        System.out.print("Enter model (marka) of a Car: ");
-        check_mark(cars_list, scanner.next());
+        System.out.println("Список автомобилей заданной марки");
+        Car.filterCar1("audi");
+        System.out.println("Список автомобилей заданной модели, которые эксплуатируются больше n лет");
+        Car.filterCar2("3", 5);
+        System.out.println("Список автомобилей заданного года выпуска, цена которых больше указанной");
+        Car.filterCar3(2006, 10000.40);
+    }
+}
 
-        System.out.println("----------b)Enter List of cars of a given model that have been in use for more than n years.");
-        System.out.print("Enter a Model of a Car: ");
-        String model = scanner.next();
-        System.out.print("Enter Number of years of use: ");
-        check_model(cars_list, model, scanner.nextInt());
+class Car {
+    private static List<Car> listCar = new LinkedList<Car>();
+    private int id;
+    private String brand;
+    private String model;
+    private long year;
+    private String color;
+    private long cost;
+    private String registrationNo;
 
-        System.out.println("----------c)Print List of cars of the set year of release which price is more than the specified.");
-        System.out.print("Enter A Year Of Manufacturing: ");
-        int year = scanner.nextInt();
-        System.out.print("Enter A Price:  ");
-        check_year(cars_list, year, scanner.nextInt());
+    public Car(String brand, String model, int year, String color, double cost, String registrationNo) {
+        setBrand(brand);
+        setModel(model);
+        setYear(year);
+        setColor(color);
+        setCost(cost);
+        setRegistrationNo(registrationNo);
+    }
 
-        scanner.close();
-
+    private static int getCurrentYear() {
+        java.util.Calendar calendar = java.util.Calendar.getInstance(java.util.TimeZone.getDefault(), java.util.Locale.getDefault());
+        calendar.setTime(new java.util.Date());
+        return calendar.get(java.util.Calendar.YEAR);
     }
 
 
-        static Car[] cars_list () {
-            Scanner scanner1 = new Scanner(System.in);
-            System.out.print("Enter a number of cars: ");
-            Car[] cars = new Car[scanner1.nextInt()];
-            for (int i = 0; i < cars.length; i++) {
-                cars[i] = new Car();
-                System.out.println();
-                System.out.print("Enter id: ");
-                cars[i].setId(scanner1.nextInt());
-                System.out.print("Enter brand: ");
-                cars[i].setMarka(scanner1.next());
-                System.out.print("Enter model: ");
-                cars[i].setModel(scanner1.next());
-                System.out.print("Enter a year of production: ");
-                cars[i].setYear(scanner1.nextInt());
-                System.out.print("Enter a color: ");
-                cars[i].setColor(scanner1.next());
-                System.out.print("Enter a price: ");
-                cars[i].setPrice(scanner1.nextInt());
-                System.out.print("Enter registration number: ");
-                cars[i].setRegistration_number(scanner1.nextInt());
-            }
+    public static void addCar(Car currentCar) {
+        listCar.add(currentCar);
+    }
 
-            return cars;
-        }
+    private static void print(Car currentCar) {
+        System.out.println(currentCar);
+    }
 
-        static Car[] car () {
-            Car[] cars = new Car[3];
-            cars[0] = new Car(0, "BMV", "X5", 2005, "black", 2100, 2134);
-            cars[1] = new Car(1, "Mazda", "X2", 2001, "white", 1500, 1649);
-            cars[2] = new Car(2, "Toyota", "X2", 2009, "blue", 2990, 3452);
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("Car{");
+        sb.append("brand='").append(brand).append('\'');
+        sb.append(", model='").append(model).append('\'');
+        sb.append(", year=").append(year);
+        sb.append(", color='").append(color).append('\'');
+        sb.append(", cost=").append(cost);
+        sb.append(", registrationNo='").append(registrationNo).append('\'');
+        sb.append('}');
+        return sb.toString();
+    }
 
+    public void setColor(String color) {
+        this.color = color;
+    }
 
-            return cars;
-        }
+    public String getBrand() {
+        return brand;
+    }
 
-        static void check_mark (Car[]cars, String marka){
-            for (Car car : cars) {
-                if (car.getMarka().equals(marka))
-                    System.out.println(car.toString());
-            }
-            System.out.println();
-        }
+    public void setBrand(String brand) {
+        this.brand = brand;
+    }
 
-        static void check_model (Car[]cars, String model,int n){
-            for (Car car : cars) {
-                if (car.getModel().equals(model) && (2020 - car.getYear()) > n) {
-                    System.out.println(car.toString());
-                }
-            }
-            System.out.println();
-        }
+    public String getModel() {
+        return model;
+    }
 
-        static void check_year (Car[]cars,int year, int price){
-            for (Car car : cars) {
-                if (car.getYear() == year && car.getPrice() > price)
-                    System.out.println(car.toString());
+    public void setModel(String model) {
+        this.model = model;
+    }
+
+    public long getYear() {
+        return year;
+    }
+
+    public void setYear(long year) {
+        this.year = year;
+    }
+
+    public double getCost() {
+        return (double) cost / 100;
+    }
+
+    public void setCost(double cost) {
+        this.cost = (long) (cost * 100);
+    }
+
+    public void setRegistrationNo(String registrationNo) {
+        this.registrationNo = registrationNo;
+    }
+
+    public static void filterCar1(String brand) {
+        for (Car currentCar : listCar) {
+            if (currentCar.getBrand().equals(brand)) {
+                print(currentCar);
             }
         }
     }
+
+    public static void filterCar2(String model, int cntYear) {
+        for (Car currentCar : listCar) {
+            if (currentCar.getModel().equals(model) && (getCurrentYear() - currentCar.getYear()) > cntYear) {
+                print(currentCar);
+            }
+        }
+    }
+
+    public static void filterCar3(int year, double price) {
+        for (Car currentCar : listCar) {
+            if (currentCar.getYear() == year && currentCar.getCost() > price) {
+                print(currentCar);
+            }
+        }
+    }
+}
+
